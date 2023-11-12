@@ -2,5 +2,12 @@
 
 Made by [Mattia Marilli](https://github.com/mattiamarilli) and [Marco Trambusti](https://github.com/MarcoTrambusti)
 
-###Obiettivi del progetto
-The project aims to test the functionality of the new HPKE standard (RFC 9180) through a Python implementation using the hybrid-pke library
+### Requirement
+ - Docker (Version 4.10.1 or latest)
+ - GNU Make (Version 3.81 or latest)
+ 
+### To make it work
+
+
+### Obiettivi del progetto
+The project aims to test the functionality of the new HPKE standard ([RFC 9180](https://datatracker.ietf.org/doc/rfc9180/)) through a Python implementation using the [hybrid-pke](https://github.com/capeprivacy/hybrid-pke) library.
