@@ -1,2 +1,2 @@
 # hpkenetsec
-An awasome test of the hpke standard
+An awsome test of the hpke standard
