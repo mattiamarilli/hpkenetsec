@@ -3,9 +3,13 @@
 Made by [Mattia Marilli](https://github.com/mattiamarilli) and [Marco Trambusti](https://github.com/MarcoTrambusti)
 
 ### Project goals
-The project aims to test the functionality of the new HPKE standard ([RFC 9180](https://datatracker.ietf.org/doc/rfc9180/)) through a Python implementation using the [Hybrid-pke](https://github.com/capeprivacy/hybrid-pke) library.
+The project aims to test the functionality of the new HPKE standard ([RFC 9180](https://datatracker.ietf.org/doc/rfc9180/)) through a Python implementation using the [hybrid-pke](https://github.com/capeprivacy/hybrid-pke) library.
 
 ### Requirement
- - Hybrid-pke (Version 1.0.1 or latest)
+ - hybrid-pke (Version 1.0.1 or latest)
  
-### Hybrid-pke installation
+### hybrid-pke installation
+
+Inside the hybrid_pke_lib folder there are the whl files relating to each platform, choose the right one for yor platform and execute the following command:
+
+
