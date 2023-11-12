@@ -12,4 +12,9 @@ The project aims to test the functionality of the new HPKE standard ([RFC 9180](
 
 Inside the hybrid_pke_lib folder there are the whl files relating to each platform, choose the right one for yor platform and execute the following command:
 
+> BUILD the container with the database
+```sh
+$ make build
+```
+
 
