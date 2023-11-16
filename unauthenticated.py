@@ -1,5 +1,5 @@
 import hybrid_pke
-hpke = hybrid_pke.default()
+hpke = hybrid_pke.default(kem = hybrid_pke.Kem.DHKEM_P256)
 info = b""  # shared metadata, correspondance-level
 aad = b""  # shared metadata, message-level
 secret_key_r, public_key_r = hpke.generate_key_pair()  # receiver keys, pre-generated
