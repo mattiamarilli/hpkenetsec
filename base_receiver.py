@@ -17,12 +17,12 @@ sock.bind((UDP_IP, UDP_PORT))
 while True:
     data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
 
-    if data == b"key plz":
-        sock.sendto(public_key_r, (UDP_IP, 5001))
+    if data == b"key_req":
+        sock.sendto(public_key_r, addr)
         print("Sended public-key to client: %s" % data)
     else:
         decodeddata = json.loads(data)
-        plaintext = hpke.open(decodeddata["encap"].encode('latin-1'), secret_key_r, info, aad, decodeddata["ciphertext"].encode('latin-1'))
+        plaintext = hpke.open(decodeddata["encap"].encode('latin-1'), secret_key_r, info, aad, decodeddata["ciphertext"].encode('latin-1'), pk_s=decodeddata["pk_s"].encode('latin-1'))
         print(plaintext.decode("utf-8"))
 
 
