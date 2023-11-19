@@ -28,10 +28,10 @@ message = b"MAMBO JUMBO!"
 encap, ciphertext = hpke.seal(public_key_r, info, aad, message)
 
 datatosend = {
-    'encap': encap.decode().replace("'", '"'),
-    'ciphertext':  ciphertext.decode().replace("'", '"'),
+    'encap': encap.decode('latin-1'),
+    'ciphertext':  ciphertext.decode('latin-1'),
 }
 
 jsontosend = json.dumps(datatosend)
 
-sock.sendto(jsontosend, (UDP_IP, 5002))
+sock.sendto(jsontosend.encode(), (UDP_IP, 5002))

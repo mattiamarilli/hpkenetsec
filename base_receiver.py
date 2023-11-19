@@ -22,7 +22,7 @@ while True:
         print("Sended public-key to client: %s" % data)
     else:
         decodeddata = json.loads(data)
-        plaintext = hpke.open(decodeddata["encap"], secret_key_r, info, aad, decodeddata["ciphertext"])
+        plaintext = hpke.open(decodeddata["encap"].encode('latin-1'), secret_key_r, info, aad, decodeddata["ciphertext"].encode('latin-1'))
         print(plaintext.decode("utf-8"))
 
 
