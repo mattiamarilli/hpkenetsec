@@ -27,6 +27,11 @@ aad = b""  # shared metadata, message-level
 message = b"MAMBO JUMBO!"
 encap, ciphertext = hpke.seal(public_key_r, info, aad, message)
 
+datatosend = {
+    'encap': encap.decode().replace("'", '"'),
+    'ciphertext':  ciphertext.decode().replace("'", '"'),
+}
 
+jsontosend = json.dumps(datatosend)
 
-sock.sendto(encap, (UDP_IP, 5002))
+sock.sendto(jsontosend, (UDP_IP, 5002))

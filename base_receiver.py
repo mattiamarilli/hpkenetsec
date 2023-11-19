@@ -21,8 +21,8 @@ while True:
         sock.sendto(public_key_r, (UDP_IP, 5001))
         print("Sended public-key to client: %s" % data)
     else:
-        #decodeddata = json.loads(data)
-        #plaintext = hpke.open(decodeddata["encap"], secret_key_r, info, aad, decodeddata["ciphertext"])
+        decodeddata = json.loads(data)
+        plaintext = hpke.open(decodeddata["encap"], secret_key_r, info, aad, decodeddata["ciphertext"])
         print(plaintext.decode("utf-8"))
 
 
