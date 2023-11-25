@@ -8,6 +8,7 @@
     "mode": 3,
     "kem_id": 32,
     "kdf_id": 1,
+    "aead_id": 1,
     "info": "4f6465206f6e2061204772656369616e2055726e",
     "pk_s": "2bfb2eb18fcad1af0e4f99142a1c474ae74e21b9425fc5c589382c69b50cc57e",
     "pk_r": "1d11a3cd247ae48e901939659bd4d79b6b959e1f3e7d66663fbc9412dd4e0976"
