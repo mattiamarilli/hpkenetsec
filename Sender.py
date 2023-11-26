@@ -1,5 +1,4 @@
 import socket
-import hybrid_pke
 import json
 from pyhpke import AEADId, CipherSuite, KDFId, KEMId, KEMKey
 
@@ -9,7 +8,7 @@ def __validatePublicKeyReceiver():
 
 
 class Sender:
-    def __init__(self, config, ip, port):
+    def __init__(self, config, ip, port, ip_recv, port_recv):
         self.mode = config["pub_data"]["mode"]
         self.kem_id = config["pub_data"]["kem_id"]
         self.kdf_id = config["pub_data"]["kdf_id"]
@@ -26,16 +25,17 @@ class Sender:
                                   socket.SOCK_DGRAM)  # UDP
         self.sock.bind((ip, port))
         self.suite_s = CipherSuite.new(
-            hex(self.kem_id), hex(self.kdf_id), hex(self.aead_id)
+            KEMId(int(self.kem_id)), KDFId(int(self.kdf_id)), AEADId(int(self.aead_id))
         )
-        self.hpke = hybrid_pke.default()
-        self.receiverAddress = ""
+        #self.hpke = hybrid_pke.default()
+        self.receiverAddress = (ip_recv, port_recv)
 
-    def sendData(self, plaintext, aad):
-        encap, ciphertext = self.hpke.seal(self.public_key_r, self.info, aad, plaintext, sk_s=self.secret_key_s)
+    def sendData(self, data):
+        enc, sender = self.suite_s.create_sender_context(self.suite_s.kem.deserialize_public_key(bytes.fromhex(self.public_key_r)))
+        ciphertext = sender.seal(data["pt"].encode(), aad=data["aad"].encode())
 
         datatosend = {
-            'encap': encap.decode('latin-1'),
+            'encap': enc.decode('latin-1'),
             'ciphertext': ciphertext.decode('latin-1'),
             'pk_s': self.public_key_s.decode('latin-1'),
         }
