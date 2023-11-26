@@ -1,7 +1,6 @@
 import socket
 import json
-from pyhpke import AEADId, CipherSuite, KDFId, KEMId, KEMKey
-
+from pyhpke import AEADId, CipherSuite, KDFId, KEMId
 
 class Receiver:
     def __init__(self, config, ip, port):
@@ -9,21 +8,19 @@ class Receiver:
         self.kem_id = config["pub_data"]["kem_id"]
         self.kdf_id = config["pub_data"]["kdf_id"]
         self.aead_id = config["pub_data"]["aead_id"]
-        self.public_key_s = config["pub_data"]["pk_s"]
-        self.public_key_r = config["pub_data"]["pk_r"]
-        self.private_key_r = config["info"]["sk"]
-        self.info = config["pub_data"]["info"]
-        self.psk = config["info"]["psk"]
-        self.psk_id = config["info"]["psk_id"]
+        self.public_key_s = bytes.fromhex(config["pub_data"]["pk_s"])
+        self.public_key_r = bytes.fromhex(config["pub_data"]["pk_r"])
+        self.private_key_r = bytes.fromhex(config["info"]["sk"])
+        self.info = bytes.fromhex(config["pub_data"]["info"])
+        self.psk = bytes.fromhex(config["info"]["psk"])
+        self.psk_id = bytes.fromhex(config["info"]["psk_id"])
         self.ip = ip
         self.port = port
         self.sock = socket.socket(socket.AF_INET,  # Internet
                                   socket.SOCK_DGRAM)  # UDP
         self.sock.bind((ip, port))
-        # self.hpke = hybrid_pke.default()
-        # self.receiverAddress = ""
 
-    def listen(self, aad):
+    def listen(self, data_json, exc):
         while True:
             print("waiting ...")
             data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
@@ -33,19 +30,49 @@ class Receiver:
             else:
                 decodeddata = json.loads(data)
                 suite_r = CipherSuite.new(
-                    KEMId(32), KDFId(1), AEADId(1)
+                    KEMId(int(self.kem_id)), KDFId(int(self.kdf_id)), AEADId(int(self.aead_id))
                 )
-                recipient = suite_r.create_recipient_context(decodeddata["encap"].encode('latin-1'),
-                                                             suite_r.kem.deserialize_private_key(
-                                                                 bytes.fromhex(self.private_key_r)))
-                pt = recipient.open(decodeddata["ciphertext"].encode('latin-1'), aad.encode())
-                # plaintext = self.hpke.open(, self.secret_key_r, self.info, aad,
-                #                       decodeddata["ciphertext"].encode('latin-1'),
-                #                       pk_s=decodeddata["pk_s"].encode('latin-1'))
-                print(pt.decode("utf-8"))
+
+                match self.mode:
+                    case 3:
+                        recipient = suite_r.create_recipient_context(
+                            bytes.fromhex(decodeddata["encap"]),
+                            suite_r.kem.deserialize_private_key(self.private_key_r), 
+                            info = self.info,
+                            psk= self.psk, 
+                            psk_id=self.psk_id,
+                            pks= suite_r.kem.deserialize_public_key(self.public_key_s)
+                        )
+                    case 2:
+                        recipient = suite_r.create_recipient_context(
+                            bytes.fromhex(decodeddata["encap"]),
+                            suite_r.kem.deserialize_private_key(self.private_key_r), 
+                            info = self.info,
+                            pks= suite_r.kem.deserialize_public_key(self.public_key_s)
+                        )
+                    case 1:
+                        recipient = suite_r.create_recipient_context(
+                            bytes.fromhex(decodeddata["encap"]),
+                            suite_r.kem.deserialize_private_key(self.private_key_r), 
+                            info = self.info,
+                            psk= self.psk, 
+                            psk_id=self.psk_id
+                        )
+                    case 0:
+                        recipient = suite_r.create_recipient_context(
+                            bytes.fromhex(decodeddata["encap"]),
+                            suite_r.kem.deserialize_private_key(self.private_key_r), 
+                            info = self.info.encode()
+                        )
+
+                pt = recipient.open(bytes.fromhex(decodeddata["ciphertext"]), aad = bytes.fromhex(data_json["aad"]))
+              
+                print(pt.decode("utf-8"), 
+                      '\u2705' if pt== bytes.fromhex(data_json["pt"]) else '\U0000274C')
 
 
 receiver_json = json.load(open('./testvectors/test1/receiver.json'))
 data_json = json.load(open('./testvectors/test1/data.json'))
+exc_json = json.load(open('./testvectors/test1/exc_data.json'))
 receiver = Receiver(receiver_json, "127.0.0.1", 5006)
-receiver.listen(data_json["aad"])
+receiver.listen(data_json, exc_json)
