@@ -27,19 +27,27 @@ class Sender:
         self.suite_s = CipherSuite.new(
             KEMId(int(self.kem_id)), KDFId(int(self.kdf_id)), AEADId(int(self.aead_id))
         )
-        #self.hpke = hybrid_pke.default()
+        # self.hpke = hybrid_pke.default()
         self.receiverAddress = (ip_recv, port_recv)
 
     def sendData(self, data):
-        enc, sender = self.suite_s.create_sender_context(self.suite_s.kem.deserialize_public_key(bytes.fromhex(self.public_key_r)))
-        ciphertext = sender.seal(data["pt"].encode(), aad=data["aad"].encode())
+        enc, sender = self.suite_s.create_sender_context(
+            self.suite_s.kem.deserialize_public_key(bytes.fromhex(self.public_key_r)))
+        ciphertext = sender.seal(data["pt"].encode())
 
+        print(ciphertext)
         datatosend = {
             'encap': enc.decode('latin-1'),
             'ciphertext': ciphertext.decode('latin-1'),
-            'pk_s': self.public_key_s.decode('latin-1'),
+            'pk_s': self.public_key_s,
         }
 
         jsontosend = json.dumps(datatosend)
 
         self.sock.sendto(jsontosend.encode(), self.receiverAddress)
+
+
+sender_json = json.load(open('./testvectors/test1/sender.json'))
+data_json = json.load(open('./testvectors/test1/data.json'))
+sender = Sender(sender_json, "127.0.0.1", 5005, "127.0.0.1", 5006)
+sender.sendData(data_json)

@@ -21,9 +21,9 @@ class Receiver:
                                   socket.SOCK_DGRAM)  # UDP
         self.sock.bind((ip, port))
         # self.hpke = hybrid_pke.default()
-        #self.receiverAddress = ""
+        # self.receiverAddress = ""
 
-    def listen(self,aad):
+    def listen(self, aad):
         print("waiting 1 ...")
         while True:
             print("waiting ...")
@@ -34,12 +34,19 @@ class Receiver:
             else:
                 decodeddata = json.loads(data)
                 suite_r = CipherSuite.new(
-                  KEMId(int(self.kem_id)), KDFId(int(self.kdf_id)), AEADId(int(self.aead_id))
+                    KEMId(int(self.kem_id)), KDFId(int(self.kdf_id)), AEADId(int(self.aead_id))
                 )
-                recipient = suite_r.create_recipient_context(decodeddata["encap"].encode('latin-1'), suite_r.kem.deserialize_private_key(bytes.fromhex(self.private_key_r)))
+                recipient = suite_r.create_recipient_context(decodeddata["encap"].encode('latin-1'),
+                                                             suite_r.kem.deserialize_private_key(
+                                                                 bytes.fromhex(self.private_key_r)))
                 pt = recipient.open(decodeddata["ciphertext"].encode('latin-1'), aad=aad)
                 # plaintext = self.hpke.open(, self.secret_key_r, self.info, aad,
                 #                       decodeddata["ciphertext"].encode('latin-1'),
                 #                       pk_s=decodeddata["pk_s"].encode('latin-1'))
                 print(pt.decode("utf-8"))
 
+
+receiver_json = json.load(open('./testvectors/test1/receiver.json'))
+data_json = json.load(open('./testvectors/test1/data.json'))
+receiver = Receiver(receiver_json, "127.0.0.1", 5006)
+receiver.listen(data_json["aad"])
