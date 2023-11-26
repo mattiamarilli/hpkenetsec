@@ -33,9 +33,8 @@ class Sender:
     def sendData(self, data):
         enc, sender = self.suite_s.create_sender_context(
             self.suite_s.kem.deserialize_public_key(bytes.fromhex(self.public_key_r)))
-        ciphertext = sender.seal(data["pt"].encode())
+        ciphertext = sender.seal(data["pt"].encode(), aad=data["aad"].encode())
 
-        print(ciphertext)
         datatosend = {
             'encap': enc.decode('latin-1'),
             'ciphertext': ciphertext.decode('latin-1'),

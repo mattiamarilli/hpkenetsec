@@ -24,7 +24,6 @@ class Receiver:
         # self.receiverAddress = ""
 
     def listen(self, aad):
-        print("waiting 1 ...")
         while True:
             print("waiting ...")
             data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
@@ -34,12 +33,12 @@ class Receiver:
             else:
                 decodeddata = json.loads(data)
                 suite_r = CipherSuite.new(
-                    KEMId(int(self.kem_id)), KDFId(int(self.kdf_id)), AEADId(int(self.aead_id))
+                    KEMId(32), KDFId(1), AEADId(1)
                 )
                 recipient = suite_r.create_recipient_context(decodeddata["encap"].encode('latin-1'),
                                                              suite_r.kem.deserialize_private_key(
                                                                  bytes.fromhex(self.private_key_r)))
-                pt = recipient.open(decodeddata["ciphertext"].encode('latin-1'), aad=aad)
+                pt = recipient.open(decodeddata["ciphertext"].encode('latin-1'), aad.encode())
                 # plaintext = self.hpke.open(, self.secret_key_r, self.info, aad,
                 #                       decodeddata["ciphertext"].encode('latin-1'),
                 #                       pk_s=decodeddata["pk_s"].encode('latin-1'))
