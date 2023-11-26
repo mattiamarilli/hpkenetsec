@@ -3,10 +3,6 @@ import json
 from pyhpke import AEADId, CipherSuite, KDFId, KEMId
 
 
-def __validatePublicKeyReceiver():
-    return True
-
-
 class Sender:
     def __init__(self, config, ip, port, ip_recv, port_recv):
         self.mode = config["pub_data"]["mode"]
