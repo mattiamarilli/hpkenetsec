@@ -1,16 +1,16 @@
 {
     "info": {
-        "psk": "2f80fe16d5740a18a484392df783ae5061b110576bcfecd7a90f430c999bbad4",
-        "psk_id": "882e3998c9342c3220a797be5b8b39a5",
-        "sk": "4893d554b8a4e6e636938e9f2848bb818e84fa51182d3dc95a17ea21af12794d"
+        "psk": "cdba3fbd6dc09ed3960eb100031e1ba68625f2a22f3ebac20c8fbdbd06bb6180",
+        "psk_id": "0e4d97696bf796de2ec9f280f01eff27",
+        "sk": "18318c4e586aeae93b0015ec29feb862424bb9bac288b70bf9a46ec16f82134c"
     },
     "pub_data": {
         "mode": 0,
         "kem_id": 32,
-        "kdf_id": 1,
-        "aead_id": 1,
+        "kdf_id": 2,
+        "aead_id": 2,
         "info": "616e74616e69",
-        "pk_s": "9b4b083c00542a5f6fb7fe09fdabc38b201ca5b98d2a78ee9f714afc5cb64e60",
-        "pk_r": "a428871bed8daeb4862c94d5f400ab54a7f833d5804b5a67ac82d2ec78ccb87c"
+        "pk_s": "1b64b89b376b1063d009b7a4ac2c71e72cc929efbc935c5129137c485e736127",
+        "pk_r": "46d44aa058d5b1275c0f87d2f9f7c7fb925c1ab2d537c2c3dbefe63758e75c68"
     }
 }

@@ -1,3 +1,4 @@
+import random
 from cryptography.hazmat.primitives import serialization
 from pyhpke import AEADId, CipherSuite, KDFId, KEMId, KEMKey
 import secrets
@@ -6,6 +7,10 @@ import json
 import os
 
 # Stampa i valori
+#KEMIds = [int("0x0010", 16),int("0x0011", 16),int("0x0012", 16),int("0x0020", 16),int("0x0021", 16)]
+KEMIds  = [int("0x0020",16)]
+KDFIds  = [int("0x0001",16),int("0x0002",16),int("0x0003",16)]
+AEADIds = [int("0x0001",16),int("0x0002",16),int("0x0003",16)]
 pt = [b"MAMBO JUMBO", b"JUMBO MAMBO", b"CONTE LELLO MASCETTI", b"TIKI TAKI", b"TARAPIO TAPIOCO", b"HA CLACSONATO?",b"Cippa Lippa!", b"Che cos'e' il genio? E' fantasia intuizione decisione e velocita d'esecuzione."]
 directory = "./testvectors/generated/test"
 
@@ -35,14 +40,17 @@ for i in range(len(pt)):
     psk_id = secrets.token_bytes(16).hex()
     info = b"antani".hex()
     aad = b"prematurata".hex()
-    kem_id = 32
-    kdf_id = 1
-    aead_id = 1
+    # kem_id = 32
+    # kdf_id = 1
+    # aead_id = 1
+    kem_id   = random.choice(KEMIds)
+    kdf_id   = random.choice(KDFIds)
+    aead_id  = random.choice(AEADIds)
     sks, pks = generate_keys()
     skr, pkr = generate_keys()
 
     suite_s = CipherSuite.new(
-        KEMId(int(kem_id)), KDFId(int(kdf_id)), AEADId(int(aead_id))
+        KEMId(kem_id), KDFId(kdf_id), AEADId(aead_id)
     )
 
     match mode:
