@@ -11,6 +11,8 @@ KEMIds = [int("0x0010", 16),int("0x0011", 16),int("0x0012", 16),int("0x0020", 16
 #KEMIds = [int("0x0020", 16)]
 KDFIds = [int("0x0001", 16), int("0x0002", 16), int("0x0003", 16)]
 AEADIds = [int("0x0001", 16), int("0x0002", 16), int("0x0003", 16)]
+infos =[b"antani",b"prematurata",b"sbiriguda",b"dominus vobiscum blinda"]
+aads =[b"Mascetti",b"Melandri",b"Perozzi",b"Necchi"]
 pt = [b"MAMBO JUMBO", b"JUMBO MAMBO", b"CONTE LELLO MASCETTI", b"TIKI TAKI", b"TARAPIO TAPIOCO", b"HA CLACSONATO?",
       b"Cippa Lippa!", b"Che cos'e' il genio? E' fantasia intuizione decisione e velocita d'esecuzione."]
 directory = "./testvectors/generated/test"
@@ -39,8 +41,8 @@ for i in range(len(pt)):
     mode = i % 4
     psk = secrets.token_bytes(32).hex()
     psk_id = secrets.token_bytes(16).hex()
-    info = b"antani".hex()
-    aad = b"prematurata".hex()
+    info = random.choice(infos).hex()
+    aad = random.choice(aads).hex()
     # kem_id = 32
     # kdf_id = 1
     # aead_id = 1
@@ -138,11 +140,6 @@ for i in range(len(pt)):
     json_data = json.dumps(data, indent=4)
 
     with open(full_dir_path + "/data.json", "w") as file:
-        file.write(json_data)
-
-    json_data = json.dumps(exc_data, indent=4)
-
-    with open(full_dir_path + "/exc_data.json", "w") as file:
         file.write(json_data)
 
     json_data = json.dumps(sender, indent=4)

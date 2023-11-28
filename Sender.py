@@ -27,7 +27,7 @@ class Sender:
         )
         self.receiverAddress = (ip_recv, port_recv)
 
-    def sendData(self, data, exc):
+    def sendData(self, data):
         match self.mode:
             case 3:
                 enc, sender = self.suite_s.create_sender_context(
@@ -78,9 +78,8 @@ for i in range(1,sum([len(d) for r, d, f in os.walk('./testvectors/generated')])
     base_path = f'./testvectors/generated/test{i}/'
     sender_json = json.load(open(base_path+"sender.json"))
     data_json = json.load(open(base_path+'data.json'))
-    exc_json = json.load(open(base_path+'exc_data.json'))
     sender = Sender(sender_json, "127.0.0.1", 5005, "127.0.0.1", 5006)
-    sender.sendData(data_json, exc_json)
+    sender.sendData(data_json)
     print(f"Test vector {i}")
     time.sleep(2)
 

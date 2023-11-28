@@ -22,7 +22,7 @@ class Receiver:
                                   socket.SOCK_DGRAM)  # UDP
         self.sock.bind((ip, port))
 
-    def listen(self, data_json, exc):
+    def listen(self, data_json):
         while True:
             print("Receiver waiting...")
             data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
@@ -82,7 +82,6 @@ for i in range(1,sum([len(d) for r, d, f in os.walk('./testvectors/generated')])
     base_path = f'./testvectors/generated/test{i}/'
     receiver_json = json.load(open(base_path + 'receiver.json'))
     data_json = json.load(open(base_path + 'data.json'))
-    exc_json = json.load(open(base_path + 'exc_data.json'))
     print(f"Test vector {i}")
     receiver = Receiver(receiver_json, "127.0.0.1", 5006)
-    receiver.listen(data_json, exc_json)
+    receiver.listen(data_json)
