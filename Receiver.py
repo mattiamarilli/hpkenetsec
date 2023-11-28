@@ -63,17 +63,25 @@ class Receiver:
                         recipient = suite_r.create_recipient_context(
                             bytes.fromhex(decodeddata["encap"]),
                             suite_r.kem.deserialize_private_key(self.private_key_r),
-                            info=self.info.encode()
+                            info=self.info
                         )
 
                 pt = recipient.open(bytes.fromhex(decodeddata["ciphertext"]), aad=bytes.fromhex(data_json["aad"]))
 
                 print(pt.decode("utf-8"),
                       '\u2705' if pt == bytes.fromhex(data_json["pt"]) else '\U0000274C')
+                self.sock.close()
+                break
 
-
-receiver_json = json.load(open('./testvectors/test1/receiver.json'))
-data_json = json.load(open('./testvectors/test1/data.json'))
-exc_json = json.load(open('./testvectors/test1/exc_data.json'))
-receiver = Receiver(receiver_json, "127.0.0.1", 5006)
-receiver.listen(data_json, exc_json)
+#
+# stringa_input = 0
+# while int(stringa_input) not in range(1, 5):
+#     stringa_input = input("Scegli quale test eseguire (1-4): ")
+for i in range(1,5):
+    base_path = f'./testvectors/generated/test{i}/'
+    receiver_json = json.load(open(base_path + 'receiver.json'))
+    data_json = json.load(open(base_path + 'data.json'))
+    exc_json = json.load(open(base_path + 'exc_data.json'))
+    print(f"Test vector {i}")
+    receiver = Receiver(receiver_json, "127.0.0.1", 5006)
+    receiver.listen(data_json, exc_json)

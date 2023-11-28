@@ -1,6 +1,7 @@
 import socket
 import json
 from pyhpke import AEADId, CipherSuite, KDFId, KEMId
+import time
 
 
 class Sender:
@@ -29,48 +30,56 @@ class Sender:
         match self.mode:
             case 3:
                 enc, sender = self.suite_s.create_sender_context(
-                    self.suite_s.kem.deserialize_public_key(self.public_key_r), 
-                    info=self.info, 
-                    psk=self.psk, 
-                    psk_id=self.psk_id, 
-                    sks= self.suite_s.kem.deserialize_private_key(self.private_key_s)
+                    self.suite_s.kem.deserialize_public_key(self.public_key_r),
+                    info=self.info,
+                    psk=self.psk,
+                    psk_id=self.psk_id,
+                    sks=self.suite_s.kem.deserialize_private_key(self.private_key_s)
                 )
             case 2:
                 enc, sender = self.suite_s.create_sender_context(
-                    self.suite_s.kem.deserialize_public_key(self.public_key_r), 
-                    info=self.info.encode(), 
-                    sks= self.suite_s.kem.deserialize_private_key(self.private_key_s)
+                    self.suite_s.kem.deserialize_public_key(self.public_key_r),
+                    info=self.info,
+                    sks=self.suite_s.kem.deserialize_private_key(self.private_key_s)
                 )
             case 1:
                 enc, sender = self.suite_s.create_sender_context(
-                    self.suite_s.kem.deserialize_public_key(self.public_key_r), 
-                    info=self.info.encode(), 
-                    psk= self.psk.encode(), 
-                    psk_id=self.psk_id.encode()
+                    self.suite_s.kem.deserialize_public_key(self.public_key_r),
+                    info=self.info,
+                    psk=self.psk,
+                    psk_id=self.psk_id
                 )
             case 0:
                 enc, sender = self.suite_s.create_sender_context(
-                    self.suite_s.kem.deserialize_public_key(self.public_key_r), 
-                    info=self.info.encode()
+                    self.suite_s.kem.deserialize_public_key(self.public_key_r),
+                    info=self.info
                 )
 
-        ciphertext = sender.seal(bytes.fromhex(data["pt"]) ,aad=bytes.fromhex(data["aad"]))
-        print(ciphertext.hex())
-        print('\u2705' if ciphertext == bytes.fromhex(exc["ct"]) else '\U0000274C')
-       
+        ciphertext = sender.seal(bytes.fromhex(data["pt"]), aad=bytes.fromhex(data["aad"]))
+
         datatosend = {
             'encap': enc.hex(),
             'ciphertext': ciphertext.hex(),
         }
 
+
         jsontosend = json.dumps(datatosend)
 
         self.sock.sendto(jsontosend.encode(), self.receiverAddress)
+        self.sock.close()
 
 
-sender_json = json.load(open('./testvectors/test1/sender.json'))
-data_json = json.load(open('./testvectors/test1/data.json'))
-exc_json = json.load(open('./testvectors/test1/exc_data.json'))
+# stringa_input = 0
+# while int(stringa_input) not in range(1, 5):
+#     stringa_input = input("Scegli quale test eseguire (1-4): ")
 
-sender = Sender(sender_json, "127.0.0.1", 5005, "127.0.0.1", 5006)
-sender.sendData(data_json, exc_json)
+for i in range(1,5):
+    base_path = f'./testvectors/generated/test{i}/'
+    sender_json = json.load(open(base_path+"sender.json"))
+    data_json = json.load(open(base_path+'data.json'))
+    exc_json = json.load(open(base_path+'exc_data.json'))
+    sender = Sender(sender_json, "127.0.0.1", 5005, "127.0.0.1", 5006)
+    sender.sendData(data_json, exc_json)
+    print(f"Test vector {i}")
+    time.sleep(2)
+
