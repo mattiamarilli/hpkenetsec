@@ -7,11 +7,12 @@ import json
 import os
 
 # Stampa i valori
-#KEMIds = [int("0x0010", 16),int("0x0011", 16),int("0x0012", 16),int("0x0020", 16),int("0x0021", 16)]
-KEMIds  = [int("0x0020",16)]
-KDFIds  = [int("0x0001",16),int("0x0002",16),int("0x0003",16)]
-AEADIds = [int("0x0001",16),int("0x0002",16),int("0x0003",16)]
-pt = [b"MAMBO JUMBO", b"JUMBO MAMBO", b"CONTE LELLO MASCETTI", b"TIKI TAKI", b"TARAPIO TAPIOCO", b"HA CLACSONATO?",b"Cippa Lippa!", b"Che cos'e' il genio? E' fantasia intuizione decisione e velocita d'esecuzione."]
+KEMIds = [int("0x0010", 16),int("0x0011", 16),int("0x0012", 16),int("0x0020", 16),int("0x0021", 16)]
+#KEMIds = [int("0x0020", 16)]
+KDFIds = [int("0x0001", 16), int("0x0002", 16), int("0x0003", 16)]
+AEADIds = [int("0x0001", 16), int("0x0002", 16), int("0x0003", 16)]
+pt = [b"MAMBO JUMBO", b"JUMBO MAMBO", b"CONTE LELLO MASCETTI", b"TIKI TAKI", b"TARAPIO TAPIOCO", b"HA CLACSONATO?",
+      b"Cippa Lippa!", b"Che cos'e' il genio? E' fantasia intuizione decisione e velocita d'esecuzione."]
 directory = "./testvectors/generated/test"
 
 
@@ -43,15 +44,19 @@ for i in range(len(pt)):
     # kem_id = 32
     # kdf_id = 1
     # aead_id = 1
-    kem_id   = random.choice(KEMIds)
-    kdf_id   = random.choice(KDFIds)
-    aead_id  = random.choice(AEADIds)
-    sks, pks = generate_keys()
-    skr, pkr = generate_keys()
+    kem_id = random.choice(KEMIds)
+    kdf_id = random.choice(KDFIds)
+    aead_id = random.choice(AEADIds)
 
     suite_s = CipherSuite.new(
         KEMId(kem_id), KDFId(kdf_id), AEADId(aead_id)
     )
+
+    keypair = suite_s.kem.derive_key_pair(b"test")
+    sks, pks = keypair.private_key.to_private_bytes().hex(), keypair.public_key.to_public_bytes().hex()
+
+    keypair = suite_s.kem.derive_key_pair(b"test")
+    skr, pkr = keypair.private_key.to_private_bytes().hex(), keypair.public_key.to_public_bytes().hex()
 
     match mode:
         case 3:
@@ -126,26 +131,26 @@ for i in range(len(pt)):
         }
     }
 
-    full_dir_path = f"{directory}{i+1}"
-    if not os.path.exists(full_dir_path ):
-        os.makedirs(full_dir_path )
+    full_dir_path = f"{directory}{i + 1}"
+    if not os.path.exists(full_dir_path):
+        os.makedirs(full_dir_path)
 
     json_data = json.dumps(data, indent=4)
 
-    with open(full_dir_path  + "/data.json", "w") as file:
+    with open(full_dir_path + "/data.json", "w") as file:
         file.write(json_data)
 
     json_data = json.dumps(exc_data, indent=4)
 
-    with open(full_dir_path  + "/exc_data.json", "w") as file:
+    with open(full_dir_path + "/exc_data.json", "w") as file:
         file.write(json_data)
 
     json_data = json.dumps(sender, indent=4)
 
-    with open(full_dir_path  + "/sender.json", "w") as file:
+    with open(full_dir_path + "/sender.json", "w") as file:
         file.write(json_data)
 
     json_data = json.dumps(receiver, indent=4)
 
-    with open(full_dir_path  + "/receiver.json", "w") as file:
+    with open(full_dir_path + "/receiver.json", "w") as file:
         file.write(json_data)
