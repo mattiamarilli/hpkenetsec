@@ -1,0 +1,16 @@
+{
+    "info": {
+        "psk": "31bb2c14a6804088389a2f37bf8a5511ecdb90314ec094010200ae0c1f768046",
+        "psk_id": "cb07b9047b6a09a56820dbf35492b4ab",
+        "sk": "58e21baf734a9c50089668dc42e4910e7992fb60fba29b045548c36841d14f63"
+    },
+    "pub_data": {
+        "mode": 1,
+        "kem_id": 32,
+        "kdf_id": 1,
+        "aead_id": 1,
+        "info": "616e74616e69",
+        "pk_s": "87cc601e8b5385282a19884fef673ccd32ff8d51c980c233ebba57dbef60955a",
+        "pk_r": "ae05b19315ad566ff60a06a4a9cf749060edc71950c0c4a2a5546e7c7744734f"
+    }
+}

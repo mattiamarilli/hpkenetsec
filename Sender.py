@@ -2,6 +2,7 @@ import socket
 import json
 from pyhpke import AEADId, CipherSuite, KDFId, KEMId
 import time
+import os
 
 
 class Sender:
@@ -73,7 +74,7 @@ class Sender:
 # while int(stringa_input) not in range(1, 5):
 #     stringa_input = input("Scegli quale test eseguire (1-4): ")
 
-for i in range(1,5):
+for i in range(1,sum([len(d) for r, d, f in os.walk('./testvectors/generated')]) + 1):
     base_path = f'./testvectors/generated/test{i}/'
     sender_json = json.load(open(base_path+"sender.json"))
     data_json = json.load(open(base_path+'data.json'))

@@ -6,7 +6,7 @@ import json
 import os
 
 # Stampa i valori
-pt = [b"MAMBO JUMBO", b"JUMBO MAMBO", b"CONTE LELLO MASCETTI", b"TIKI TAKI"]
+pt = [b"MAMBO JUMBO", b"JUMBO MAMBO", b"CONTE LELLO MASCETTI", b"TIKI TAKI", b"TARAPIO TAPIOCO", b"HA CLACSONATO?",b"Cippa Lippa!", b"Che cos'e' il genio? E' fantasia intuizione decisione e velocita d'esecuzione."]
 directory = "./testvectors/generated/test"
 
 
@@ -29,8 +29,8 @@ def generate_keys():
     return private_key_bytes.hex(), public_key_bytes.hex()
 
 
-for i in range(4):
-    mode = i
+for i in range(len(pt)):
+    mode = i % 4
     psk = secrets.token_bytes(32).hex()
     psk_id = secrets.token_bytes(16).hex()
     info = b"antani".hex()
@@ -45,7 +45,7 @@ for i in range(4):
         KEMId(int(kem_id)), KDFId(int(kdf_id)), AEADId(int(aead_id))
     )
 
-    match i:
+    match mode:
         case 3:
             enc, sender = suite_s.create_sender_context(
                 suite_s.kem.deserialize_public_key(bytes.fromhex(pkr)),
@@ -91,7 +91,7 @@ for i in range(4):
             "sk": sks
         },
         "pub_data": {
-            "mode": i,
+            "mode": mode,
             "kem_id": kem_id,
             "kdf_id": kdf_id,
             "aead_id": aead_id,
@@ -108,7 +108,7 @@ for i in range(4):
             "sk": skr
         },
         "pub_data": {
-            "mode": i,
+            "mode": mode,
             "kem_id": kem_id,
             "kdf_id": kdf_id,
             "aead_id": aead_id,
