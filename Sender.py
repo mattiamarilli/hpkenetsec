@@ -71,6 +71,9 @@ class Sender:
 
     def sendExcData(self, exc_data):
 
+        if("tag" in exc_data):
+            exc_data["ct"] += exc_data["tag"]
+
         jsontosend = json.dumps(exc_data)
 
         self.sock.sendto(jsontosend.encode(), self.receiverAddress)
