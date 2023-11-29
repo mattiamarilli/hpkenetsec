@@ -60,14 +60,24 @@ class Sender:
 
         datatosend = {
             'encap': enc.hex(),
-            'ciphertext': ciphertext.hex(),
+            'ciphertext': ciphertext.hex()
         }
-
 
         jsontosend = json.dumps(datatosend)
 
         self.sock.sendto(jsontosend.encode(), self.receiverAddress)
         self.sock.close()
+
+    # def sendExcData(self, exc_data):
+    #     datatosend = {
+    #         'encap': exc_data["enc"],
+    #         'ciphertext': exc_data["ct"]
+    #     }
+    #
+    #     jsontosend = json.dumps(datatosend)
+    #
+    #     self.sock.sendto(jsontosend.encode(), self.receiverAddress)
+    #     self.sock.close()
 
 
 # stringa_input = 0
@@ -83,3 +93,11 @@ for i in range(1,sum([len(d) for r, d, f in os.walk('./testvectors/generated')])
     print(f"Test vector {i}")
     time.sleep(2)
 
+# for i in range(1, sum([len(d) for r, d, f in os.walk('./testvectors/generated')]) + 1):
+#     base_path = f'./testvectors/generated/test{i}/'
+#     sender_json = json.load(open(base_path + "sender.json"))
+#     exc_data = json.load(open(base_path + "exc_data.json"))
+#     sender = Sender(sender_json, "127.0.0.1", 5005, "127.0.0.1", 5006)
+#     sender.sendExcData(exc_data)
+#     print(f"Test vector {i}")
+#     time.sleep(2)

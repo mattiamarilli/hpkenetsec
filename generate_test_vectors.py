@@ -151,3 +151,8 @@ for i in range(len(pt)):
 
     with open(full_dir_path + "/receiver.json", "w") as file:
         file.write(json_data)
+
+    json_data = json.dumps(exc_data, indent=4)
+
+    with open(full_dir_path + "/exc_data.json", "w") as file:
+        file.write(json_data)
