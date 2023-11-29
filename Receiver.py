@@ -38,7 +38,7 @@ class Receiver:
                 match self.mode:
                     case 3:
                         recipient = suite_r.create_recipient_context(
-                            bytes.fromhex(decodeddata["encap"]),
+                            bytes.fromhex(decodeddata["enc"]),
                             suite_r.kem.deserialize_private_key(self.private_key_r),
                             info=self.info,
                             psk=self.psk,
@@ -47,14 +47,14 @@ class Receiver:
                         )
                     case 2:
                         recipient = suite_r.create_recipient_context(
-                            bytes.fromhex(decodeddata["encap"]),
+                            bytes.fromhex(decodeddata["enc"]),
                             suite_r.kem.deserialize_private_key(self.private_key_r),
                             info=self.info,
                             pks=suite_r.kem.deserialize_public_key(self.public_key_s)
                         )
                     case 1:
                         recipient = suite_r.create_recipient_context(
-                            bytes.fromhex(decodeddata["encap"]),
+                            bytes.fromhex(decodeddata["enc"]),
                             suite_r.kem.deserialize_private_key(self.private_key_r),
                             info=self.info,
                             psk=self.psk,
@@ -62,12 +62,12 @@ class Receiver:
                         )
                     case 0:
                         recipient = suite_r.create_recipient_context(
-                            bytes.fromhex(decodeddata["encap"]),
+                            bytes.fromhex(decodeddata["enc"]),
                             suite_r.kem.deserialize_private_key(self.private_key_r),
                             info=self.info
                         )
 
-                pt = recipient.open(bytes.fromhex(decodeddata["ciphertext"]), aad=bytes.fromhex(data_json["aad"]))
+                pt = recipient.open(bytes.fromhex(decodeddata["ct"]), aad=bytes.fromhex(data_json["aad"]))
 
                 print(pt.decode("utf-8"),
                       '\u2705' if pt == bytes.fromhex(data_json["pt"]) else '\U0000274C')

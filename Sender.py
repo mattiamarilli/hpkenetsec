@@ -59,37 +59,35 @@ class Sender:
         ciphertext = sender.seal(bytes.fromhex(data["pt"]), aad=bytes.fromhex(data["aad"]))
 
         datatosend = {
-            'encap': enc.hex(),
-            'ciphertext': ciphertext.hex()
+            'enc': enc.hex(),
+            'ct': ciphertext.hex(),
         }
+
 
         jsontosend = json.dumps(datatosend)
 
         self.sock.sendto(jsontosend.encode(), self.receiverAddress)
         self.sock.close()
 
-    # def sendExcData(self, exc_data):
-    #     datatosend = {
-    #         'encap': exc_data["enc"],
-    #         'ciphertext': exc_data["ct"]
-    #     }
-    #
-    #     jsontosend = json.dumps(datatosend)
-    #
-    #     self.sock.sendto(jsontosend.encode(), self.receiverAddress)
-    #     self.sock.close()
+    def sendExcData(self, exc_data):
+
+        jsontosend = json.dumps(exc_data)
+
+        self.sock.sendto(jsontosend.encode(), self.receiverAddress)
+        self.sock.close()
 
 
-# stringa_input = 0
-# while int(stringa_input) not in range(1, 5):
-#     stringa_input = input("Scegli quale test eseguire (1-4): ")
+choice = 0
+while int(choice) not in range(1, 3):
+    choice = input("Scegli quale test eseguire (1-2): ")
 
 for i in range(1,sum([len(d) for r, d, f in os.walk('./testvectors/generated')]) + 1):
     base_path = f'./testvectors/generated/test{i}/'
     sender_json = json.load(open(base_path+"sender.json"))
+    exc_data_json = json.load(open(base_path+'exc_data.json'))
     data_json = json.load(open(base_path+'data.json'))
     sender = Sender(sender_json, "127.0.0.1", 5005, "127.0.0.1", 5006)
-    sender.sendData(data_json)
+    sender.sendData(data_json) if int(choice) == 1 else sender.sendExcData(exc_data_json)
     print(f"Test vector {i}")
     time.sleep(2)
 
