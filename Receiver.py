@@ -74,11 +74,8 @@ class Receiver:
                 self.sock.close()
                 break
 
-#
-# stringa_input = 0
-# while int(stringa_input) not in range(1, 5):
-#     stringa_input = input("Scegli quale test eseguire (1-4): ")
-for i in range(1,sum([len(d) for r, d, f in os.walk('./testvectors/generated')]) + 1):
+
+for i in range(1, sum([len(d) for r, d, f in os.walk('./testvectors/generated')]) + 1):
     base_path = f'./testvectors/generated/test{i}/'
     receiver_json = json.load(open(base_path + 'receiver.json'))
     data_json = json.load(open(base_path + 'data.json'))
